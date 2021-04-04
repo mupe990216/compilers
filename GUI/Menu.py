@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Menu
+from CreacionBasico import crearVentana
 
 #Funcion de prueba con parametros
 def funcion_a(palabra):
@@ -29,11 +30,11 @@ ventana.config(menu=barra_menu)
 
 #Agregamos opciones al menú
 opciones_menu = Menu(barra_menu)
-opciones_menu.add_command(label="Básico", command=lambda: funcion_a("ok"))
+opciones_menu.add_command(label="Básico", command=crearVentana)
 opciones_menu.add_command(label="Unir")
 opciones_menu.add_command(label="Concatenar")
 opciones_menu.add_command(label="Cerradura +")
-opciones_menu.add_command(label="Cerradura -")
+opciones_menu.add_command(label="Cerradura *")
 opciones_menu.add_command(label="Opcional")
 opciones_menu.add_separator()
 opciones_menu.add_command(label="Unión para analizador léxico")
