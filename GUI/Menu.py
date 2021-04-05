@@ -1,11 +1,8 @@
 import tkinter as tk
 from tkinter import Menu
-from CreacionBasico import crearVentana
-
-#Funcion de prueba con parametros
-def funcion_a(palabra):
-    print("Estoy presionando básico XD")
-    print(palabra)
+from CreacionBasico import creacionBasico
+from UnionAFN import creacionUnion
+from OperacionCerradura import creacionCerradura
 
 #Función de prueba
 def funcion_salir():
@@ -30,11 +27,11 @@ ventana.config(menu=barra_menu)
 
 #Agregamos opciones al menú
 opciones_menu = Menu(barra_menu)
-opciones_menu.add_command(label="Básico", command=crearVentana)
-opciones_menu.add_command(label="Unir")
+opciones_menu.add_command(label="Básico", command=creacionBasico)
+opciones_menu.add_command(label="Unir", command=creacionUnion )
 opciones_menu.add_command(label="Concatenar")
 opciones_menu.add_command(label="Cerradura +")
-opciones_menu.add_command(label="Cerradura *")
+opciones_menu.add_command(label="Cerradura *", command=creacionCerradura)
 opciones_menu.add_command(label="Opcional")
 opciones_menu.add_separator()
 opciones_menu.add_command(label="Unión para analizador léxico")
