@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import PhotoImage
 from tkinter import messagebox as mBox
 
 #Pequeño mensaje del boton y destrucción de la ventana
@@ -10,7 +9,7 @@ def crearAFN(inf, sup, id, ventana):
     ventana.destroy()
     return
 
-def crearVentana():
+def creacionBasico():
     #Crear la ventana
     ventana = tk.Tk()
     ventana.title("Creación de AFN básico") #Titulo
@@ -39,10 +38,10 @@ def crearVentana():
     boton.place(x=10, y=120, width=210, height=30)
 
     #Agregar cuadros de texto
-    inf = tk.IntVar()
+    inf = tk.StringVar()
     CuadroInf = tk.Entry(ventana, width="1", textvariable=inf)
     CuadroInf.place(x=120, y=10, width=100, height=30)
-    sup = tk.IntVar()
+    sup = tk.StringVar()
     CuadroSup = tk.Entry(ventana, width="1", textvariable=sup)
     CuadroSup.place(x=120, y=45, width=100, height=30)
     id = tk.IntVar()
