@@ -51,6 +51,7 @@ def creacionBasico():
     """#Agregar Imagenes
     imagen = PhotoImage(file="./Imagenes/Basico.png")
     etiquetaImagen = ttk.Label(ventana, image=imagen)
-    etiquetaImagen.place(x=60, y=220, width=100, height=20)"""
+    etiquetaImagen.place(x=60, y=220, width=100, height=20)"""    
 
     ventana.mainloop()
+
