@@ -67,7 +67,7 @@ opciones_menu.add_command(label="Analizar una cadena")
 opciones_menu.add_command(label="Probar analizador léxico")
 opciones_menu.add_separator()
 opciones_menu.add_command(label="Salir", command=funcion_salir)
-barra_menu.add_cascade(label="AFN'S", menu=opciones_menu)
+barra_menu.add_cascade(label="-> Menu Opciones <-", menu=opciones_menu)
 
 #Creacion De marco donde se pondra la caja de texto
 marco=Frame(ventana)
