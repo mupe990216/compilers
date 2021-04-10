@@ -40,13 +40,20 @@ class Transicion:
         self.__simb2 = simb2
 
     def imprime_Transicion(self):
-        imprime = "Estado: "
-        imprime += str(self.__estado.imprime_Estado())
-        imprime += "  Simb1: " 
+        imprime = "[Estado: "
+        imprime += str(self.__estado.getIdEstado())
+        imprime += "  Simb1: "
         imprime += str(self.__simb1)
-        imprime += "  Simb2: " 
+        imprime += "  Simb2: "
         imprime += str(self.__simb2)
+        imprime += "] "
         return imprime
 
-
-
+    def imprime_Transicion_Prueba(self):
+        imprime = "Estado: "
+        imprime += str(self.__estado.imprime_Estado())
+        imprime += "  Simb1: "
+        imprime += str(self.__simb1)
+        imprime += "  Simb2: "
+        imprime += str(self.__simb2)
+        return imprime
