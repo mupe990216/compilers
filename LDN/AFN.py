@@ -45,7 +45,7 @@ class AFN:
     def unir(self, afn):
         copiaAFN1 = deepcopy(self)
         copiaAFN1.idAFN = AFN.contIdAFN
-        AFN.contIdAFN += 1 
+        AFN.contIdAFN += 1
         copiaAFN2 = deepcopy(afn)
         e1 = Estado()
         e2 = Estado()
@@ -157,7 +157,7 @@ class AFN:
         copiaAFN1.estados.add(eFin)
         return copiaAFN1
 
-    def afn2Analizador(self, afns):
+    def afnAnalizador(self, afns):
         #crear el primer estado que conecta a las otras regex
         token = 10
         analizador = AFN()
@@ -180,8 +180,8 @@ class AFN:
             analizador.estadosAceptados = copia.estadosAceptados | analizador.estadosAceptados
 
         return analizador
-    
-    
+
+
     def cerraduraEpsilon(self, edos):
         R = set()
         S = []
@@ -211,26 +211,26 @@ class AFN:
                         if edo not in R:
                             S.append(edo)
             return R
-        
+
 
     def mover(self, edos, simbolo):
         C = set()
         aux = Estado()
         if type(edos)  is set:
-            
+
             for edo in edos:
                 for t in edo.getTransicion():
                     aux = t.getEstado(simbolo)
                     if aux != None:
-                        C.add(aux) 
+                        C.add(aux)
             return C
         else:
             for t in edos.getTransicion():
                 aux = t.getEstado(simbolo)
 
                 if aux != None:
-                    C.add(aux) 
-            return C 
+                    C.add(aux)
+            return C
 
     def irA(self, edos, simbolo):
         C = set()
@@ -317,7 +317,7 @@ print("\n\t ------ Alfabeto ------ \n{}\n".format(imprime))
 
 
 afn5 = afn1.cerraduraPositiva()
-print("\n\n************************************ -CerraduraPositiva AFN: {} ************************************ ".format(afn5.idAFN))        
+print("\n\n************************************ -CerraduraPositiva AFN: {} ************************************ ".format(afn5.idAFN))
 print("\n\t ------ Estados Del AFN ------ \n{}".format(afn5.estados))
 print("\n\t ------ Estado Inicial ------ \n{}\n".format(afn5.estadoInicial))
 print("\n\t ------ Estados Aceptacion ------ \n{} ".format(afn5.estadosAceptados))
@@ -330,7 +330,7 @@ print("\n\t ------ Alfabeto ------ \n{}\n".format(imprime))
 
 
 afn6 = afn1.cerraduraKleene()
-print("\n\n************************************ -CerraduraKleene AFN: {} ************************************ ".format(afn6.idAFN))        
+print("\n\n************************************ -CerraduraKleene AFN: {} ************************************ ".format(afn6.idAFN))
 print("\n\t ------ Estados Del AFN ------ \n{}".format(afn6.estados))
 print("\n\t ------ Estado Inicial ------ \n{}\n".format(afn6.estadoInicial))
 print("\n\t ------ Estados Aceptacion ------ \n{} ".format(afn6.estadosAceptados))
@@ -344,7 +344,7 @@ print("\n\t ------ Alfabeto ------ \n{}\n".format(imprime))
 
 afn7 = afn1.opcional()
 imprime = ""
-print("\n\n************************************ -opcional AFN: {} ************************************ ".format(afn7.idAFN))        
+print("\n\n************************************ -opcional AFN: {} ************************************ ".format(afn7.idAFN))
 for x in afn7.estados:
     imprime += str("{}\n".format(x.imprime_Estado()))
 print("\n\t ------ Estados Del AFN ------ \n{}".format(imprime))
@@ -359,11 +359,3 @@ for x in afn7.alfabeto:
     lista.append(x)
 imprime = str(sorted(lista))
 print("\n\t ------ Alfabeto ------ \n{}\n".format(imprime))
-
-
-
-
-
-
-
-
