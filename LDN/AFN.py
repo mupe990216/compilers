@@ -237,6 +237,89 @@ class AFN:
         C = self.cerraduraEpsilon(self.mover(edos, simbolo))
         return C
 
+    def ConvAFNaAFD(self):
+        AFD = []
+        titulo = []
+        estados = []
+        cola = []
+        estadosCreados = []
+        existe = False
+        nuevaColuma = []
+        contador = 0
+
+        #Agregar titulos
+        titulo.append('')
+        titulo.append('')
+        for i in range(32, 127):
+            titulo.append(chr(i))
+        titulo.append('Aceptación')
+        AFD.append(titulo)
+
+        #Agregar estado de inicio
+        estados.append(contador)
+        contador += 1
+        estados.append(self.cerraduraEpsilon(self.estadoInicial))
+        for i in range(32,127):
+            estados.append(-1)
+        estados.append(-1)
+        for estado in estados[1]:
+            if estado.getEdoAceptado():
+                estados[-1] = estado.getToken()
+        AFD.append(estados)
+
+        #Inicia el analisis de los estados AFD encontrados
+        cola.append(estados)
+        while len(cola) != 0:
+            estados = cola.pop()
+
+            #Comparamos los estados con todos los simbolos
+            for i in range(32, 127):
+                estadosCreados = self.irA(estados[1],chr(i))
+
+                #Si encontrados transición
+                if len(estadosCreados) != 0:
+                    existe = False
+
+                    #Verificamos que no hayamos encontrado este estado antes
+                    for j in range(1,len(AFD)):
+                        columna = AFD[j]
+                        if len(columna[1].symmetric_difference(estadosCreados)) == 0:
+                            existe = True
+
+                    #Si no es repetido, agregarlo
+                    if(existe == False):
+                        nuevaColuma = []
+                        nuevaColuma.append(contador)
+                        contador += 1
+                        nuevaColuma.append(estadosCreados)
+                        for i in range(32,127):
+                            nuevaColuma.append(-1)
+                        nuevaColuma.append(-1)
+                        for estado in nuevaColuma[1]:
+                            if estado.getEdoAceptado():
+                                nuevaColuma[-1] = estado.getToken()
+                        AFD.append(nuevaColuma)
+                        cola.append(nuevaColuma)
+
+        #buscamos y colocamos las transiciones en la tabla
+        for k in range(1,len(AFD)):
+            estados = AFD[k]
+            for i in range(32, 127):
+                estadosCreados = self.irA(estados[1], chr(i))
+                if len(estadosCreados) != 0:
+                    for j in range(1, len(AFD)):
+                        columna = AFD[j]
+                        if len(columna[1].symmetric_difference(estadosCreados)) == 0:
+                            estados[i-30] = j-1
+
+        #Imprimimos el archivo
+        archivo = open("AFD.txt","w")
+        for i in AFD:
+            archivo.write(str(i[0])+"\t")
+            for j in i[2:]:
+                archivo.write(str(j)+"\t")
+            archivo.write("\n")
+        return AFD
 
 # <-------------------- Seccion de Pruebas ----------------------->
 afn1 = AFN()
