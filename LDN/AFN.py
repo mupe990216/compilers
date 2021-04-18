@@ -4,6 +4,7 @@ from Transicion import *
 from SimbolosEspeciales import *
 from copy import deepcopy
 from EstadoSimbolo import *
+from AnalizadorLexico import *
 
 class AFN:
     contIdAFN = 0
@@ -442,3 +443,81 @@ for x in afn7.alfabeto:
     lista.append(x)
 imprime = str(sorted(lista))
 print("\n\t ------ Alfabeto ------ \n{}\n".format(imprime))
+
+automatas = []
+
+automata1 = AFN()
+automata1.crearBasico('D')
+automata2 = automata1.cerraduraPositiva()
+automatas.append(automata2)
+
+automata3 = AFN()
+automata3.crearBasico('D')
+automata4 = automata3.cerraduraPositiva()
+automata5 = AFN()
+automata5.crearBasico('.')
+automata7 = AFN()
+automata7.crearBasico('D')
+automata8 = automata7.cerraduraPositiva()
+automata6 = automata4.concatenar(automata5)
+automata9 = automata6.concatenar(automata8)
+automatas.append(automata9)
+
+automata10 = AFN()
+automata10.crearBasico('L')
+automata11 = AFN()
+automata11.crearBasico('D')
+automata12 = automata10.unir(automata11)
+automata13 = automata12.cerraduraKleene()
+automata14 = AFN()
+automata14.crearBasico('L')
+automata15 = automata14.concatenar(automata13)
+automatas.append(automata15)
+
+automata16 = AFN()
+automata16.crearBasico('+')
+automatas.append(automata16)
+
+automata17 = AFN()
+automata17.crearBasico('*')
+automatas.append(automata17)
+
+automata18 = AFN()
+automata18.crearBasico('E')
+automata19 = AFN()
+automata19.crearBasico('T')
+automata20 = automata18.unir(automata19)
+automata21 = automata20.cerraduraPositiva()
+automatas.append(automata21)
+
+AFNespecial = automata4.afnAnalizador(automatas)
+imprime = ""
+print("\n\n************************************ -opcional AFN: {} ************************************ ".format(AFNespecial.idAFN))
+for x in AFNespecial.estados:
+    imprime += str("{}\n".format(x.imprime_Estado()))
+print("\n\t ------ Estados Del AFN ------ \n{}".format(imprime))
+print("\n\t ------ Estado Inicial ------ \n{}\n".format(AFNespecial.estadoInicial.imprime_Estado()))
+imprime = ""
+for x in AFNespecial.estadosAceptados:
+    imprime += str("{}\n".format(x.imprime_Estado()))
+print("\n\t ------ Estados Aceptacion ------ \n{} ".format(imprime))
+imprime = ""
+lista = []
+for x in AFNespecial.alfabeto:
+    lista.append(x)
+imprime = str(sorted(lista))
+print("\n\t ------ Alfabeto ------ \n{}\n".format(imprime))
+
+
+AFD = AFNespecial.ConvAFNaAFD()
+
+for i in AFD:
+    print(i)
+
+analizador = AnalisisLexico(AFD)
+cadena = 'DD.DD+DD*LDDLD+EETTELDLD+TTDD.DD'
+analizador.analizarCadena(cadena)
+token = analizador.getToken()
+print(token)
+lexema = analizador.getLexema()
+print(lexema)
