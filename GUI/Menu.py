@@ -6,6 +6,11 @@ from ConcatenacionAFN  import creacionConcatenacion
 from OperacionCerraduraMas import creacionCerraduraMas
 from OperacionOpcional import creacionOpcional
 from tabulate import tabulate
+from tkinter import messagebox as mBox
+from AFN import *
+from AnalizadorLexico import *
+import tkinter as tk
+from tkinter import simpledialog
 
 datos = [
 	["a,b,c,d,e,f,a,b,c,d,e,f,a,b,c,d,e,f,a,b,c,d,e,f","a,b","f,e","0"],
@@ -13,20 +18,61 @@ datos = [
 	["a,b,c,d,e,f,a,b,c,d,e,f,a,b,c,d,e,f,a,b,c,d,e,f","a,b","f,e","0"]
 ]
 
+misAFNs = []
+AFD = []
+Lexicos = []
+
 #Funcion para actualizar la caja de Texto
 def imprime_Tabla():
+	datos = []
+	for afn in misAFNs:
+		columna = []
+		imprime = ""
+		lista = []
+		for x in afn.alfabeto:
+		    lista.append(x)
+		imprime = str(sorted(lista))
+		columna.append(imprime)
+		columna.append(afn.estadoInicial.imprime_Estado())
+		imprime = ""
+		for x in afn.estadosAceptados:
+		    imprime += str("{}\n".format(x.imprime_Estado()))
+		columna.append(imprime)
+		datos.append(columna)
 	etiquetaTexto = Text(marco_scrollable, width=250, height=40, bg="#CCEEFF", font=("Monospace",11))
 	etiquetaTexto.grid(row=0,column=0,sticky='nsew',padx=0,pady=0)
 	etiquetaTexto.insert(1.0,tabulate(
-	datos, 
-	headers=["index","Alfabeto","Edos Inicia","Edos Acepta","Token"], 
+	datos,
+	headers=["index","Alfabeto","Edos Inicia","Edos Acepta"],
 	showindex='always',
 	tablefmt='fancy_grid',
 	numalign="center",
 	stralign="center")
 	)
-	etiquetaTexto.configure(state='disable')	
+	etiquetaTexto.configure(state='disable')
 
+def crearEspecial():
+	global misAFNs
+	aux = AFN()
+	especial = aux.afnAnalizador(misAFNs)
+	misAFNs = []
+	misAFNs.append(especial)
+	mBox.showinfo('Especial','Especial creado con exito')
+
+def crearAFD():
+	AFN = misAFNs.pop()
+	AFD = AFN.ConvAFNaAFD()
+	Lexico = AnalisisLexico(AFD)
+	Lexicos.append(Lexico)
+	mBox.showinfo('AFD','AFD creado con exito')
+
+def analizarCadena():
+	cadena = simpledialog.askstring("Cadena", "Ingrese la cadena a analizar",parent=ventana)
+	Lexicos[0].analizarCadena(cadena)
+	token = Lexicos[0].getToken()
+	lexema = Lexicos[0].getLexema()
+	print(token)
+	print(lexema)
 
 #Función de prueba
 def funcion_salir():
@@ -39,7 +85,7 @@ ventana = Tk()
 ventana.title("Constructor de automatas") #Titulo
 #Calcular el centro de pantalla
 x_ventana = int(ventana.winfo_screenwidth())
-x_ventana = int((x_ventana-800)/2)
+x_ventana = int((x_ventana-1000)/2)
 y_ventana = int(ventana.winfo_screenheight())
 y_ventana = int((y_ventana-500)/2)
 ventana.geometry('1000x500+'+str(x_ventana)+'+'+str(y_ventana))#Tamaño + centro
@@ -54,17 +100,16 @@ ventana.config(menu=barra_menu)
 #Agregamos opciones al menú
 opciones_menu = Menu(barra_menu)
 opciones_menu.config(bg="#99DDDD",font=("Monospace",12))
-opciones_menu.add_command(label="Básico", command=creacionBasico)
-opciones_menu.add_command(label="Unir", command=creacionUnion )
-opciones_menu.add_command(label="Concatenar", command=creacionConcatenacion)
-opciones_menu.add_command(label="Cerradura +", command=creacionCerraduraMas)
-opciones_menu.add_command(label="Cerradura *", command=creacionCerradura)
-opciones_menu.add_command(label="Opcional", command=creacionOpcional)
+opciones_menu.add_command(label="Básico", command=lambda: creacionBasico(misAFNs))
+opciones_menu.add_command(label="Unir", command=lambda: creacionUnion(misAFNs))
+opciones_menu.add_command(label="Concatenar", command=lambda: creacionConcatenacion(misAFNs))
+opciones_menu.add_command(label="Cerradura +", command=lambda: creacionCerraduraMas(misAFNs))
+opciones_menu.add_command(label="Cerradura *", command=lambda: creacionCerradura(misAFNs))
+opciones_menu.add_command(label="Opcional", command=lambda: creacionOpcional(misAFNs))
 opciones_menu.add_separator()
-opciones_menu.add_command(label="Unión para analizador léxico")
-opciones_menu.add_command(label="Convertir AFN a AFD")
-opciones_menu.add_command(label="Analizar una cadena")
-opciones_menu.add_command(label="Probar analizador léxico")
+opciones_menu.add_command(label="Unión para analizador léxico", command=crearEspecial)
+opciones_menu.add_command(label="Convertir AFN a AFD", command=crearAFD)
+opciones_menu.add_command(label="Analizar una cadena", command=analizarCadena)
 opciones_menu.add_separator()
 opciones_menu.add_command(label="Salir", command=funcion_salir)
 barra_menu.add_cascade(label="-> Menu Opciones <-", menu=opciones_menu)

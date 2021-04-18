@@ -1,14 +1,19 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox as mBox
+from AFN import *
 
-def hacerCerraduraMas(AFN, ventana):
+def hacerCerraduraMas(AFN, ventana, misAFNs):
+    automata = misAFNs[int(AFN.get())]
+    automataNuevo = automata.cerraduraPositiva()
+    misAFNs.remove(automata)
+    misAFNs.append(automataNuevo)
     mBox.showinfo('Cerradura +','Cerradura hecha con exito')
     ventana.quit()
     ventana.destroy()
     return
 
-def creacionCerraduraMas():
+def creacionCerraduraMas(misAFNs):
     #Crear la ventana
     ventana = tk.Tk()
     ventana.title("Operación cerradura +") #Titulo
@@ -26,14 +31,19 @@ def creacionCerraduraMas():
     etiquetaAplicar.place(x=10, y=50, width=150, height=20)
     etiquetaAplicar.configure(background="#FFFFFF")
 
+    lista = []
+    for i in range(0, len(misAFNs)):
+        lista.append(i)
+    lista = tuple(lista)
+
     #Listas
     AFN = tk.IntVar()
     listaAFN = ttk.Combobox(ventana, width=2, textvariable=AFN)
-    listaAFN['values']=(1,2,3,4,5)
+    listaAFN['values']=lista
     listaAFN.place(x=170, y=45, width=50, height=30)
 
     #Boton
-    boton = tk.Button(ventana, text="Realizar operación", command=lambda: hacerCerraduraMas(AFN.get(),ventana))
+    boton = tk.Button(ventana, text="Realizar operación", command=lambda: hacerCerraduraMas(listaAFN,ventana, misAFNs))
     boton.place(x=40, y=85, width=150, height=30)
 
     ventana.mainloop()
