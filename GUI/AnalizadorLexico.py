@@ -3,15 +3,16 @@ class AnalisisLexico:
 	AFD = []
 	Token = []
 	Lexema = []
-	Contador = -1
+	contador = -1
 
 	def __init__(self, AFD):
 		self.AFD = AFD
-		Contador = -1
+		self.contador = -1
 
 	def analizarCadena(self, cadena):
 		self.Token = []
 		self.Lexema = []
+		self.contador = -1
 		Token = -1
 		Lexema = ""
 		Estado = 0
@@ -48,10 +49,10 @@ class AnalisisLexico:
 
 	def yylex(self):
 		self.contador += 1
-		return self.Token[contador]
+		return self.Token[self.contador]
 
 	def undoToken(self):
 		self.contador -= 1
 
 	def miLexema(self):
-		return self.Lexema[contador]
+		return self.Lexema[self.contador]
