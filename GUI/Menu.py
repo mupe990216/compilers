@@ -9,6 +9,7 @@ from tabulate import tabulate
 from tkinter import messagebox as mBox
 from AFN import *
 from AnalizadorLexico import *
+from EvaluadorExpresion import *
 import tkinter as tk
 from tkinter import simpledialog
 
@@ -73,6 +74,10 @@ def analizarCadena():
 	lexema = Lexicos[0].getLexema()
 	print(token)
 	print(lexema)
+	evaluador = EvaluadorExpresion(Lexicos[0])
+	evaluador.IniEval()
+	resultado = evaluador.getResultado()
+	mBox.showinfo('Resultado','El resultado es '+str(resultado))
 
 #Función de prueba
 def funcion_salir():
