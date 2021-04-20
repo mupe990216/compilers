@@ -75,9 +75,12 @@ def analizarCadena():
 	print(token)
 	print(lexema)
 	evaluador = EvaluadorExpresion(Lexicos[0])
-	evaluador.IniEval()
-	resultado = evaluador.getResultado()
-	mBox.showinfo('Resultado','El resultado es '+str(resultado))
+	salida = evaluador.IniEval()
+	if salida:
+		resultado = evaluador.getResultado()
+		mBox.showinfo('Resultado','El resultado es '+str(resultado))
+	else:
+		mBox.showinfo('Resultado','El evaluador de expresion marca error')
 
 #Función de prueba
 def funcion_salir():
