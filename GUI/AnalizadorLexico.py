@@ -10,6 +10,8 @@ class AnalisisLexico:
 		Contador = -1
 
 	def analizarCadena(self, cadena):
+		self.Token = []
+		self.Lexema = []
 		Token = -1
 		Lexema = ""
 		Estado = 0
@@ -19,8 +21,8 @@ class AnalisisLexico:
 			caracter = cadena[i]
 			Columna = self.AFD[Estado+1]
 			Estado = Columna[ord(caracter)-30]
-			Token = Columna[-1]
 			if Estado == -1:
+				Token = Columna[-1]
 				self.Token.append(Token)
 				self.Lexema.append(Lexema)
 				Estado = 0
@@ -30,6 +32,9 @@ class AnalisisLexico:
 			else:
 				Lexema += caracter
 			i += 1
+		Columna = self.AFD[Estado+1]
+		Estado = Columna[ord(caracter)-30]
+		Token = Columna[-1]
 		self.Token.append(Token)
 		self.Lexema.append(Lexema)
 		self.Token.append("Fin")
@@ -41,9 +46,12 @@ class AnalisisLexico:
 	def getLexema(self):
 		return self.Lexema
 
-	def yylex():
-		contador += 1
-		return self.Token[contador], self.Lexema[contador]
+	def yylex(self):
+		self.contador += 1
+		return self.Token[contador]
 
-	def undoToken():
-		contador -= 1
+	def undoToken(self):
+		self.contador -= 1
+
+	def miLexema(self):
+		return self.Lexema[contador]
