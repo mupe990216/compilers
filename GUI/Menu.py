@@ -11,6 +11,7 @@ from tkinter import messagebox as mBox
 from AFN import *
 from AnalizadorLexico import *
 from EvaluadorExpresion import *
+from EvaluadorExpresionPostfijo import *
 import tkinter as tk
 from tkinter import simpledialog
 
@@ -146,6 +147,43 @@ def calcular():
 	else:
 		mBox.showinfo('Resultado','El evaluador de expresion marca error')
 
+def postfijo():
+	#Obtenemos el AFD del archivo creado previamente
+	archivo = open("./Calculadora.txt",'r')
+	mensaje = archivo.read()
+	archivo.close()
+	texto = ""
+	columna = []
+	AFD = []
+	bandera = False
+	for x in mensaje:
+		if x == "\t":
+			if bandera:
+				texto = int(texto)
+			columna.append(texto)
+			texto = ""
+		elif x == "\n":
+			AFD.append(columna)
+			columna = []
+			bandera = True
+		else:
+			texto += x
+	#Preparamos el AFD
+	Lexico = AnalisisLexico(AFD)
+	#Ingresamos las cadenas
+	cadena = simpledialog.askstring("Cadena", "Ingrese la cadena a analizar",parent=ventana)
+	Lexico.analizarCadena(cadena)
+	token = Lexico.getToken()
+	lexema = Lexico.getLexema()
+	#Realzamos el analisis de expresión y mostramos resultados
+	evaluador = EvaluadorExpresionPostfijo(Lexico)
+	salida = evaluador.IniEval()
+	if salida:
+		resultado = evaluador.getResultado()
+		mBox.showinfo('Resultado','El postfijo es '+resultado)
+	else:
+		mBox.showinfo('Resultado','El evaluador de expresion marca error')
+
 #Función de prueba
 def funcion_salir():
     ventana.quit()
@@ -190,6 +228,7 @@ barra_menu.add_cascade(label="-> Menu Opciones <-", menu=opciones_menu)
 opciones_analisis = Menu(barra_menu)
 opciones_analisis.config(bg="#99DDDD",font=("Monospace",12))
 opciones_analisis.add_command(label="Calculadora", command=calcular)
+opciones_analisis.add_command(label="Postfijo", command=postfijo)
 barra_menu.add_cascade(label="-> Analisis Sintáctico <-", menu=opciones_analisis)
 
 #Creacion De marco donde se pondra la caja de texto
