@@ -21,7 +21,7 @@ class AnalisisLexico:
 		while i < len(cadena):
 			caracter = cadena[i]
 			Columna = self.AFD[Estado+1]
-			Estado = Columna[ord(caracter)-30]
+			Estado = Columna[ord(caracter)-31]
 			if Estado == -1:
 				Token = Columna[-1]
 				self.Token.append(Token)
@@ -34,7 +34,7 @@ class AnalisisLexico:
 				Lexema += caracter
 			i += 1
 		Columna = self.AFD[Estado+1]
-		Estado = Columna[ord(caracter)-30]
+		Estado = Columna[ord(caracter)-31]
 		Token = Columna[-1]
 		self.Token.append(Token)
 		self.Lexema.append(Lexema)
