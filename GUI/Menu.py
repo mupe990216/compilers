@@ -5,6 +5,7 @@ from OperacionCerradura import creacionCerradura
 from ConcatenacionAFN  import creacionConcatenacion
 from OperacionCerraduraMas import creacionCerraduraMas
 from OperacionOpcional import creacionOpcional
+from VentanaToken import crearVentanaToken
 from tabulate import tabulate
 from tkinter import messagebox as mBox
 from AFN import *
@@ -21,7 +22,6 @@ datos = [
 
 misAFNs = []
 AFD = []
-Lexicos = []
 
 #Funcion para actualizar la caja de Texto
 def imprime_Tabla():
@@ -63,18 +63,82 @@ def crearEspecial():
 def crearAFD():
 	AFN = misAFNs.pop()
 	AFD = AFN.ConvAFNaAFD()
-	Lexico = AnalisisLexico(AFD)
-	Lexicos.append(Lexico)
+	"""Lexico = AnalisisLexico(AFD)
+	Lexicos.append(Lexico)"""
 	mBox.showinfo('AFD','AFD creado con exito')
 
 def analizarCadena():
+	#Obtenemos el AFD del archivo creado previamente
+	direccion = simpledialog.askstring("Archivo","Ingrese la dirección del archivo a analizar", parent=ventana)
+	archivo = open(direccion,'r')
+	mensaje = archivo.read()
+	archivo.close()
+	texto = ""
+	columna = []
+	AFD = []
+	bandera = False
+	for x in mensaje:
+		if x == "\t":
+			if bandera:
+				texto = int(texto)
+			columna.append(texto)
+			texto = ""
+		elif x == "\n":
+			AFD.append(columna)
+			columna = []
+			bandera = True
+		else:
+			texto += x
+	#Preparamos el AFD
+	Lexico = AnalisisLexico(AFD)
+	#Ingresamos las cadenas
 	cadena = simpledialog.askstring("Cadena", "Ingrese la cadena a analizar",parent=ventana)
-	Lexicos[0].analizarCadena(cadena)
-	token = Lexicos[0].getToken()
-	lexema = Lexicos[0].getLexema()
-	print(token)
-	print(lexema)
-	evaluador = EvaluadorExpresion(Lexicos[0])
+	Lexico.analizarCadena(cadena)
+	token = Lexico.getToken()
+	lexema = Lexico.getLexema()
+	#Imprimimos los tokens
+	tabla = []
+	tabla.append(token)
+	tabla.append(lexema)
+	crearVentanaToken(tabla)
+	"""evaluador = EvaluadorExpresion(Lexicos[0])
+	salida = evaluador.IniEval()
+	if salida:
+		resultado = evaluador.getResultado()
+		mBox.showinfo('Resultado','El resultado es '+str(resultado))
+	else:
+		mBox.showinfo('Resultado','El evaluador de expresion marca error')"""
+
+def calcular():
+	#Obtenemos el AFD del archivo creado previamente
+	archivo = open("./Calculadora.txt",'r')
+	mensaje = archivo.read()
+	archivo.close()
+	texto = ""
+	columna = []
+	AFD = []
+	bandera = False
+	for x in mensaje:
+		if x == "\t":
+			if bandera:
+				texto = int(texto)
+			columna.append(texto)
+			texto = ""
+		elif x == "\n":
+			AFD.append(columna)
+			columna = []
+			bandera = True
+		else:
+			texto += x
+	#Preparamos el AFD
+	Lexico = AnalisisLexico(AFD)
+	#Ingresamos las cadenas
+	cadena = simpledialog.askstring("Cadena", "Ingrese la cadena a analizar",parent=ventana)
+	Lexico.analizarCadena(cadena)
+	token = Lexico.getToken()
+	lexema = Lexico.getLexema()
+	#Realzamos el analisis de expresión y mostramos resultados
+	evaluador = EvaluadorExpresion(Lexico)
 	salida = evaluador.IniEval()
 	if salida:
 		resultado = evaluador.getResultado()
@@ -121,6 +185,12 @@ opciones_menu.add_command(label="Analizar una cadena", command=analizarCadena)
 opciones_menu.add_separator()
 opciones_menu.add_command(label="Salir", command=funcion_salir)
 barra_menu.add_cascade(label="-> Menu Opciones <-", menu=opciones_menu)
+
+#Opciones de analisis sintactico
+opciones_analisis = Menu(barra_menu)
+opciones_analisis.config(bg="#99DDDD",font=("Monospace",12))
+opciones_analisis.add_command(label="Calculadora", command=calcular)
+barra_menu.add_cascade(label="-> Analisis Sintáctico <-", menu=opciones_analisis)
 
 #Creacion De marco donde se pondra la caja de texto
 marco=Frame(ventana)
