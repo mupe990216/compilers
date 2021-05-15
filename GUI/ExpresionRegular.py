@@ -81,7 +81,7 @@ class ExpresionRegular:
             return False, v
         elif token == 40:
             v = v.cerraduraKleene()
-            sino, v = self.Cp()
+            sino, v = self.Cp(v)
             if sino:
                 return True, v
             return False, v
