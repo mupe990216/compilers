@@ -13,6 +13,7 @@ from AnalizadorLexico import *
 from EvaluadorExpresion import *
 from EvaluadorExpresionPostfijo import *
 from ExpresionRegular import *
+from AnalizadorSintacticoGramatica import *
 import tkinter as tk
 from tkinter import simpledialog
 
@@ -222,6 +223,42 @@ def AFNCadena():
 	else:
 		mBox.showinfo('Resultado','Hay un error en el AFN')
 
+def AnalizadorGramatica():
+	#Obtenemos el AFD del archivo creado previamente
+	archivo = open("./GramaticaGramaticas.txt",'r')
+	mensaje = archivo.read()
+	archivo.close()
+	texto = ""
+	columna = []
+	AFD = []
+	bandera = False
+	for x in mensaje:
+		if x == "\t":
+			if bandera:
+				texto = int(texto)
+			columna.append(texto)
+			texto = ""
+		elif x == "\n":
+			AFD.append(columna)
+			columna = []
+			bandera = True
+		else:
+			texto += x
+	#Preparamos el AFD
+	Lexico = AnalisisLexico(AFD)
+	#Ingresamos las cadenas
+	cadena = simpledialog.askstring("Cadena", "Ingrese la cadena del AFN",parent=ventana)
+	Lexico.analizarCadena(cadena)
+	token = Lexico.getToken()
+	lexema = Lexico.getLexema()
+	#Realzamos el analisis de expresión y mostramos resultados
+	evaluador = AnalizadorSintacticoGramatica(Lexico)
+	salida = evaluador.IniEval()
+	if salida:
+		mBox.showinfo('Resultado','OK')
+	else:
+		mBox.showinfo('Resultado','Hay un error en la gramatica')
+
 #Función de prueba
 def funcion_salir():
     ventana.quit()
@@ -272,8 +309,14 @@ barra_menu.add_cascade(label="-> Analisis Sintáctico <-", menu=opciones_analisi
 #Opciones para crear un AFN desde una cadena
 opciones_cadena = Menu(barra_menu)
 opciones_cadena.config(bg="#99DDDD", font=("Monospace", 12))
-opciones_cadena.add_command(label="AFD desde cadena", command=AFNCadena)
-barra_menu.add_cascade(label="-> AFD desde cadena <-", menu=opciones_cadena)
+opciones_cadena.add_command(label="AFN desde cadena", command=AFNCadena)
+barra_menu.add_cascade(label="-> AFN desde cadena <-", menu=opciones_cadena)
+
+#Opciones para crear una gramatica
+opciones_gramatica = Menu(barra_menu)
+opciones_gramatica.config(bg="#99DDDD", font=("Monospace", 12))
+opciones_gramatica.add_command(label="Evaluar gramatica", command=AnalizadorGramatica)
+barra_menu.add_cascade(label="-> Gramaticas <-", menu=opciones_gramatica)
 
 #Creacion De marco donde se pondra la caja de texto
 marco=Frame(ventana)
