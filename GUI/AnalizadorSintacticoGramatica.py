@@ -3,6 +3,7 @@ from AFN import *
 class AnalizadorSintacticoGramatica:
     analizadores = []
     resultado = []
+    SIMBOLO = ""
 
     def __init__(self, AnalizadorLex):
         self.analizadores = []
@@ -62,7 +63,7 @@ class AnalizadorSintacticoGramatica:
         return True, v
 
     def Regla(self, v):
-        sino, v = self.LadoIzq(v)
+        sino = self.LadoIzq()
         if sino:
             token = self.analizadores[0].yylex()
             if token == 50:
@@ -73,17 +74,19 @@ class AnalizadorSintacticoGramatica:
                     return True, v
         return False, v
 
-    def LadoIzq(self, v):
+    def LadoIzq(self):
         token = self.analizadores[0].yylex()
         if token == 50:
             token = self.analizadores[0].yylex()
         if token == 10:
-            return True, v
-        return False, v
+            self.SIMBOLO = self.analizadores[0].miLexema()
+            return True
+        return False
 
     def LadosDerechos(self, v):
-        sino,v = self.LadoDerecho(v)
+        sino, N = self.LadoDerecho()
         if sino:
+            v.append(N)
             sino, v = self.LadosDerechosp(v)
             if sino:
                 return True, v
@@ -94,8 +97,9 @@ class AnalizadorSintacticoGramatica:
         if token == 50:
             token = self.analizadores[0].yylex()
         if token == 40:
-            sino, v = self.LadoDerecho(v)
+            sino, N = self.LadoDerecho()
             if sino:
+                v.append(N)
                 sino, v = self.LadosDerechosp(v)
                 if sino:
                     return True, v
@@ -103,26 +107,31 @@ class AnalizadorSintacticoGramatica:
         self.analizadores[0].undoToken()
         return True, v
 
-    def LadoDerecho(self, v):
+    def LadoDerecho(self):
+        N = []
+        N.append(self.SIMBOLO)
         token = self.analizadores[0].yylex()
         if token == 50:
             token = self.analizadores[0].yylex()
         if token == 10:
-            sino, v = self.LadoDerechop(v)
+            N.append(self.analizadores[0].miLexema())
+            sino, N = self.LadoDerechop(N)
             if sino:
-                return True, v
-        return False, v
+                return True, N
+        return False, N
 
-    def LadoDerechop(self, v):
+    def LadoDerechop(self, N):
         token = self.analizadores[0].yylex()
         if token == 50:
             token = self.analizadores[0].yylex()
         if token == 10:
-            sino, v = self.LadoDerechop(v)
+            N.append(self.analizadores[0].miLexema())
+            sino, N = self.LadoDerechop(N)
             if sino:
-                return True, v
+                return True, N
         self.analizadores[0].undoToken()
-        return True, v
+        N.append(None)
+        return True, N
 
     def getResultado(self):
         return self.resultado

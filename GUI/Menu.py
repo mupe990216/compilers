@@ -255,7 +255,23 @@ def AnalizadorGramatica():
 	evaluador = AnalizadorSintacticoGramatica(Lexico)
 	salida = evaluador.IniEval()
 	if salida:
-		mBox.showinfo('Resultado','OK')
+		arregloListas = evaluador.getResultado()
+		print(arregloListas)
+		#mBox.showinfo('Resultado','La gramtica es correcta')
+		Vn = []
+		Vt = []
+		for i in range(0, len(arregloListas)):
+			Vn.append(arregloListas[i][0])
+			for j in arregloListas[i]:
+				Vt.append(j)
+		Vn = set(Vn)
+		Vt = set(Vt)
+		Vt = list(Vt - Vn)
+		Vn = list(Vn)
+		Vt.remove(None)
+		print(Vn)
+		print(Vt)
+
 	else:
 		mBox.showinfo('Resultado','Hay un error en la gramatica')
 
