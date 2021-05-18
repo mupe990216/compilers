@@ -15,6 +15,7 @@ from EvaluadorExpresionPostfijo import *
 from ExpresionRegular import *
 from AnalizadorSintacticoGramatica import *
 from LL1 import *
+from AnalisisSintacticoLL1 import *
 import tkinter as tk
 from tkinter import simpledialog
 
@@ -270,23 +271,81 @@ def AnalizadorGramatica():
 		Vt = list(Vt - Vn)
 		Vn = list(Vn)
 		Vt.remove(None)
-		print(Vn)
-		print(Vt)
 		LL = LL1(Vn, Vt, arregloListas)
-		lista = ["T","E'"]
-		print(LL.first(lista))
-		lista = ["F","T'"]
-		print(LL.first(lista))
-		lista = ["EPSILON"]
-		print(LL.first(lista))
-		lista = ["E'","T'","F"]
-		print(LL.first(lista))
-		print(LL.follow("E"))
-		print(LL.follow("E'"))
-		print(LL.follow("T"))
 		LL.crearTabla()
+		mBox.showinfo('mensaje','La tabla LL(1) se ha creado exitosamente')
 	else:
-		mBox.showinfo('Resultado','Hay un error en la gramatica')
+		mBox.showinfo('Error','Hay un error en la gramatica')
+
+def analizarCadenaLL1():
+	#Generamos la lista de regla y la tabla LL(1)
+	direccionLL1 = simpledialog.askstring("Archivo", "Ingrese la dirección del archivo de la tabla LL(1)", parent=ventana)
+	archivoLL1 = open(direccionLL1,'r')
+	mensaje = archivoLL1.read()
+	archivoLL1.close()
+	texto = ""
+	columna = []
+	arregloReglas = []
+	tablaLL1 = []
+	bandera = True
+	bandera2 = True
+	for i in mensaje:
+		if bandera:
+			if i == "\t":
+				columna.append(texto)
+				texto = ""
+			elif i == "\n":
+				arregloReglas.append(columna)
+				columna = []
+			elif i == "-":
+				bandera = False
+			else:
+				texto += i
+		else:
+			if bandera2:
+				bandera2 = False
+			else:
+				if i == "\t":
+					columna.append(texto)
+					texto = ""
+				elif i == "\n":
+					tablaLL1.append(columna)
+					columna = []
+				else:
+					texto += i
+	#Obtenemos la tabla del AFD
+	direccionAnalizador = simpledialog.askstring("Archivo","Ingrese la dirección del analizador léxico", parent=ventana)
+	archivoAnalizador = open(direccionAnalizador, 'r')
+	mensaje = archivoAnalizador.read()
+	archivoAnalizador.close()
+	texto = ""
+	columna = []
+	AFD = []
+	bandera = False
+	for i in mensaje:
+		if i == "\t":
+			if bandera:
+				texto = int(texto)
+			columna.append(texto)
+			texto = ""
+		elif i == "\n":
+			AFD.append(columna)
+			columna = []
+			bandera = True
+		else:
+			texto += i
+	#Obtenemos los token de la cadena a ingresar
+	Lexico = AnalisisLexico(AFD)
+	cadena = simpledialog.askstring("Cadena","Ingrese la cadena a analizar",parent=ventana)
+	Lexico.analizarCadena(cadena)
+	token = Lexico.getToken()
+	#Realizamos el analisis sintactico con la tabla LL(1)
+	LL1 = AnalisisSintacticoLL1(arregloReglas, tablaLL1)
+	salida = LL1.analizar(token)
+	if salida:
+		mBox.showinfo("Correcto","La cadena es correcta")
+	else:
+		mBox.showinfo("Error","La cadena es incorrecta")
 
 #Función de prueba
 def funcion_salir():
@@ -344,7 +403,8 @@ barra_menu.add_cascade(label="-> AFN desde cadena <-", menu=opciones_cadena)
 #Opciones para crear una gramatica
 opciones_gramatica = Menu(barra_menu)
 opciones_gramatica.config(bg="#99DDDD", font=("Monospace", 12))
-opciones_gramatica.add_command(label="Evaluar gramatica", command=AnalizadorGramatica)
+opciones_gramatica.add_command(label="Crear tabla LL(1) por medio de una gramatica", command=AnalizadorGramatica)
+opciones_gramatica.add_command(label="Analisis sintactico", command=analizarCadenaLL1)
 barra_menu.add_cascade(label="-> Gramaticas <-", menu=opciones_gramatica)
 
 #Creacion De marco donde se pondra la caja de texto
