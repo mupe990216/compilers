@@ -14,6 +14,7 @@ from EvaluadorExpresion import *
 from EvaluadorExpresionPostfijo import *
 from ExpresionRegular import *
 from AnalizadorSintacticoGramatica import *
+from LL1 import *
 import tkinter as tk
 from tkinter import simpledialog
 
@@ -271,7 +272,18 @@ def AnalizadorGramatica():
 		Vt.remove(None)
 		print(Vn)
 		print(Vt)
-
+		LL = LL1(Vn, Vt, arregloListas)
+		lista = ["T","E'"]
+		print(LL.first(lista))
+		lista = ["F","T'"]
+		print(LL.first(lista))
+		lista = ["EPSILON"]
+		print(LL.first(lista))
+		lista = ["E'","T'","F"]
+		print(LL.first(lista))
+		print(LL.follow("E"))
+		print(LL.follow("E'"))
+		print(LL.follow("T"))
 	else:
 		mBox.showinfo('Resultado','Hay un error en la gramatica')
 
