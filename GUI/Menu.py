@@ -284,6 +284,7 @@ def AnalizadorGramatica():
 		print(LL.follow("E"))
 		print(LL.follow("E'"))
 		print(LL.follow("T"))
+		LL.crearTabla()
 	else:
 		mBox.showinfo('Resultado','Hay un error en la gramatica')
 

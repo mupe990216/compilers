@@ -60,13 +60,51 @@ class LL1:
 	def crearTabla(self):
 		tablaLL1 = []
 		columna = []
-		columna.append()
-		for i in  Vt:
+		columna.append("")
+		for i in self.Vt:
 			columna.append(i)
 		columna.append('$')
+		columna.remove("EPSILON")
 		tablaLL1.append(columna)
 		columna = []
-		for i in Vn:
+		for i in self.Vn:
 			columna.append(i)
-			#for j in self.arregloReglas:
-				#if j[0] == i:
+			for j in self.Vt:
+				columna.append("")
+			tablaLL1.append(columna)
+			columna = []
+		for regla, i in enumerate(self.arregloReglas):
+			simbolos = list(self.first(i[1:-1]))
+			if simbolos[0] == "EPSILON":
+				simbolos = list(self.follow(i[0]))
+			for j in tablaLL1:
+				if j[0] == i[0]:
+					for simbolo in simbolos:
+						for numColumna, k in enumerate(tablaLL1[0]):
+							if k == simbolo:
+								j[numColumna] = regla
+		for i in self.Vt:
+			if i != "EPSILON":
+				columna.append(i)
+				for j in tablaLL1[0][1:]:
+					if j == i:
+						columna.append("POP")
+					else:
+						columna.append("")
+				tablaLL1.append(columna)
+				columna = []
+		columna.append("$")
+		for i in self.Vt:
+			columna.append("")
+		columna[-1] = "ACEPTACION"
+		tablaLL1.append(columna)
+		archivo = open("LL1.txt","w")
+		for i in self.arregloReglas:
+			for j in i:
+				archivo.write(str(j)+"\t")
+			archivo.write("\n")
+		archivo.write("-\n")
+		for i in tablaLL1:
+			for j in i:
+				archivo.write(str(j)+"\t")
+			archivo.write("\n")
